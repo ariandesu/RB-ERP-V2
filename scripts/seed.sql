@@ -14,7 +14,7 @@ VALUES (
   'super_admin',
   'active',
   '["WH-01","WH-02","WH-03"]',
-  1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+  1, 1, 1, 1, 1, 1, 1, 1, 1,
   '4AYfb5YnD9aXEgyBHgXbLA==:c4rCCuKF+70Lz8Ym9mmWKsqyX/+eoAOj/hJNxGza9yo=',
   1720000000000,
   1720000000000
@@ -28,7 +28,7 @@ VALUES (
   'warehouse_manager',
   'active',
   '["WH-01","WH-02"]',
-  1, 1, 1, 1, 1, 1, 0, 0, 0, 0,
+  1, 1, 1, 1, 1, 1, 0, 0, 0,
   'QiKEKqVB3xS2o9uLnM2nzA==:TLrkO09oLIN+2HxK6dEOaJHe2mPF1BSB/RaXXc6ygJ4=',
   1720000000000,
   1720000000000
@@ -42,7 +42,7 @@ VALUES (
   'staff',
   'active',
   '["WH-01"]',
-  1, 0, 1, 0, 0, 0, 0, 0, 0, 0,
+  1, 0, 1, 0, 0, 0, 0, 0, 0,
   'ci6gH4MDkOuOEO6dmbhB9A==:XxFX280R6RXKhirbtAmW66PPMujibVhcBr7rp+iT2Pg=',
   1720000000000,
   1720000000000
