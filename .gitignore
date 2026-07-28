@@ -13,6 +13,9 @@
 # open-next build output
 /.open-next/
 
+# wrangler local dev state
+.wrangler/
+
 # production
 /build
 
