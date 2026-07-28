@@ -21,6 +21,7 @@ import { createInwardShipmentAction, deleteInwardShipmentAction } from '@/app/ac
 import BarcodeScanButton from '@/components/barcode-scan-button';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { useBarcodeInput } from '@/hooks/use-barcode-input';
+import { useInwardShipments } from '@/hooks/use-erp-data';
 import { lookupSkuByCode } from '@/lib/db/lookupSku';
 
 interface InwardClientProps {
@@ -47,7 +48,7 @@ const WAREHOUSES = [
 ];
 
 export default function InwardClient({ initialShipments, materials, profile }: InwardClientProps) {
-  const [shipments, setShipments] = useState<InwardShipment[]>(initialShipments);
+  const { data: shipments, refetch } = useInwardShipments(initialShipments);
   const [search, setSearch] = useState('');
   const [selectedWarehouseFilter, setSelectedWarehouseFilter] = useState('all');
   const [expandedShipmentId, setExpandedShipmentId] = useState<string | null>(null);
@@ -260,7 +261,7 @@ export default function InwardClient({ initialShipments, materials, profile }: I
           items: addedItems,
         };
 
-        setShipments(prev => [newShipment, ...prev]);
+        refetch();
         setCreateOpen(false);
         resetForm();
       } else {
@@ -277,7 +278,7 @@ export default function InwardClient({ initialShipments, materials, profile }: I
         toast.success('Inbound Log Rolled Back', { 
           description: `Shipment ${code} has been successfully deleted, and stock cards rolled back.`,
         });
-        setShipments(prev => prev.filter(sh => sh.id !== shipmentId));
+        refetch();
         if (expandedShipmentId === shipmentId) setExpandedShipmentId(null);
       } else {
         toast.error('Rollback Failed', { description: result.error });

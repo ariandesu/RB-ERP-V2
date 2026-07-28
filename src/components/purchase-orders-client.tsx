@@ -23,6 +23,7 @@ import { useCurrency } from '@/hooks/use-currency';
 import BarcodeScanButton from '@/components/barcode-scan-button';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { lookupSkuByCode } from '@/lib/db/lookupSku';
+import { usePurchaseOrders } from '@/hooks/use-erp-data';
 
 interface POClientProps {
   initialPOs: PurchaseOrder[];
@@ -46,7 +47,7 @@ const STATUS_LABELS: Record<PurchaseOrderStatus, string> = {
 };
 
 export default function PurchaseOrdersClient({ initialPOs, materials, profile }: POClientProps) {
-  const [purchaseOrders, setPurchaseOrders] = useState<PurchaseOrder[]>(initialPOs);
+  const { data: purchaseOrders, refetch } = usePurchaseOrders(initialPOs);
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [expandedPOId, setExpandedPOId] = useState<string | null>(null);
@@ -237,7 +238,7 @@ export default function PurchaseOrdersClient({ initialPOs, materials, profile }:
           items: addedItems,
         };
 
-        setPurchaseOrders(prev => [newPO, ...prev]);
+        refetch();
         setCreateOpen(false);
         resetForm();
       } else {
@@ -254,7 +255,7 @@ export default function PurchaseOrdersClient({ initialPOs, materials, profile }:
         toast.success('PO Status Shifted', { 
           description: `Order ${code} status successfully updated to ${STATUS_LABELS[status]}.`,
         });
-        setPurchaseOrders(prev => prev.map(po => po.id === poId ? { ...po, status } : po));
+        refetch();
       } else {
         toast.error('Status Shift Failed', { description: result.error });
       }
@@ -269,7 +270,7 @@ export default function PurchaseOrdersClient({ initialPOs, materials, profile }:
         toast.success('Purchase Order Purged', { 
           description: `Order ${code} has been successfully deleted.`,
         });
-        setPurchaseOrders(prev => prev.filter(po => po.id !== poId));
+        refetch();
         if (expandedPOId === poId) setExpandedPOId(null);
       } else {
         toast.error('Deletion Failed', { description: result.error });

@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import { getCachedProfile } from '@/lib/db/profile';
 import Sidebar from '@/components/sidebar';
 import { UserProfile } from '@/types';
+import QueryProvider from '@/app/query-provider';
 
 export default async function DashboardLayout({
   children,
@@ -27,7 +28,7 @@ export default async function DashboardLayout({
       {/* Main dashboard viewport */}
       <main className="flex-1 flex flex-col min-w-0 overflow-y-auto">
         <div className="flex-1 p-6 md:p-8 space-y-6">
-          {children}
+          <QueryProvider>{children}</QueryProvider>
         </div>
       </main>
     </div>

@@ -22,6 +22,7 @@ import Link from 'next/link';
 import BarcodeScanButton from '@/components/barcode-scan-button';
 import ConfirmDialog from '@/components/confirm-dialog';
 import { useBarcodeInput } from '@/hooks/use-barcode-input';
+import { useMaterials } from '@/hooks/use-erp-data';
 
 interface MaterialsClientProps {
   initialMaterials: Material[];
@@ -29,7 +30,7 @@ interface MaterialsClientProps {
 }
 
 export default function MaterialsClient({ initialMaterials, profile }: MaterialsClientProps) {
-  const [materials, setMaterials] = useState<Material[]>(initialMaterials);
+  const { data: materials, refetch } = useMaterials(initialMaterials);
   const [search, setSearch] = useState('');
   const [activeTab, setActiveTab] = useState<string>('all');
   const [expandedMaterialId, setExpandedMaterialId] = useState<string | null>(null);
@@ -214,7 +215,7 @@ export default function MaterialsClient({ initialMaterials, profile }: Materials
           ).flat() as SKU[]
         };
 
-        setMaterials(prev => [newLocalMaterial, ...prev]);
+        refetch();
         setCreateOpen(false);
         resetForm();
       } else {
@@ -255,16 +256,7 @@ export default function MaterialsClient({ initialMaterials, profile }: Materials
       const result = await updateMaterialAction(selectedMaterial.id, payload);
       if (result.success) {
         toast.success('Catalog Upgraded', { description: `${selectedMaterial.code} parameters synchronized successfully.` });
-        setMaterials(prev => prev.map(m => m.id === selectedMaterial.id ? {
-          ...m,
-          name,
-          description,
-          supplier_name: supplierName,
-          composition,
-          weight_gsm: selectedMaterial.category === 'fabric' ? weightGsm : undefined,
-          width_inches: selectedMaterial.category === 'fabric' ? widthInches : undefined,
-          yarn_count: selectedMaterial.category === 'yarn' ? yarnCount : undefined,
-        } : m));
+        refetch();
         setEditOpen(false);
       } else {
         toast.error('Sync Failed', { description: result.error });
@@ -278,7 +270,7 @@ export default function MaterialsClient({ initialMaterials, profile }: Materials
       const result = await deleteMaterialAction(materialId);
       if (result.success) {
         toast.success('Catalog Purged', { description: `Material ${materialCode} deleted successfully.` });
-        setMaterials(prev => prev.filter(m => m.id !== materialId));
+        refetch();
         if (expandedMaterialId === materialId) setExpandedMaterialId(null);
       } else {
         toast.error('Deletions Failed', { description: result.error });
